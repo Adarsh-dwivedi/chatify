@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 
 import { User } from "../models/User.js";
 import { generateTokenAndAddToCookie } from "../lib/jsonWebToken.js";
+import { sendEmail } from "../emails/emailHandlers.js";
+import { ENV } from "../lib/env.js";
 
 export const signup = async (req, res)=>{
     try{
@@ -41,12 +43,20 @@ export const signup = async (req, res)=>{
         }
         await newUser.save();
         generateTokenAndAddToCookie(newUser._id, res);
-        return res.status(201).json({
+        res.status(201).json({
             _id: newUser._id,
             fullName: newUser.fullName,
             email: newUser.email,
             profilePic: newUser.profilePic
         });
+
+        // send welcome email
+        try{
+            sendEmail(newUser.email, newUser.fullName, ENV.CLIENT_URL);
+        }
+        catch(error){
+            console.error("Failed to send welcome email: ", error);
+        }
     }catch (err){
         console.error("Signup Error: ", err);
         res.status(500).json({message: "Internal Server Error, Try again later!"});
