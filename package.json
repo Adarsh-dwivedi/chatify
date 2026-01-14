@@ -17,8 +17,5 @@
     "url": "https://github.com/Adarsh-dwivedi/chatify/issues"
   },
   "homepage": "https://github.com/Adarsh-dwivedi/chatify#readme",
-  "description": "",
-  "dependencies": {
-    "redis": "^5.10.0"
-  }
+  "description": ""
 }
